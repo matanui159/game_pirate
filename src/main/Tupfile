@@ -1,0 +1,19 @@
+include_rules
+
+UTIL = ../util
+
+CC_FLAGS += -I$(UTIL)
+
+LD_FLAGS += -mwindows
+LD_FLAGS += -nostdlib -Wl,-e_entry
+LD_FLAGS += -lkernel32 -luser32
+
+SRC += *.c
+SRC += graphics/*.c
+
+: foreach $(SRC) |> !CC |> {OBJ}
+: {OBJ} $(UTIL)/util.a |> !LD |> main.exe
+
+ifneq ($(DEBUG),y)
+	: main.exe |> ^ UPX %O^ upx --ultra-brute %f -o%o |> %B_upx.exe
+endif

@@ -1,3 +1,0 @@
-CC_FLAGS += -g -DTEST_BUILD
-include_rules
-: main.exe |> ^ TEST^ ./%f |>

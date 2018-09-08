@@ -1,4 +1,0 @@
-CC_FLAGS += -Os -flto
-LD_FLAGS += -flto
-include_rules
-: main.exe |> ^ UPX^ upx --ultra-brute %f -o%o |> %B_upx.exe

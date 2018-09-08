@@ -1,12 +1,9 @@
-#include "mem.h"
-#include "array.h"
+#include "graphics/window.h"
 #include <windows.h>
 
 void entry() {
-	#ifdef TEST_BUILD
-		mem_test();
-		array_test();
-	#else
-	#endif
-	ExitProcess(0);
+	window_init();
+	for (;;) {
+		window_update();
+	}
 }

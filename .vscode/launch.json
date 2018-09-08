@@ -2,25 +2,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "main",
+			"name": "debug",
 			"type": "cppdbg",
 			"request": "launch",
 			"MIMode": "gdb",
 			"miDebuggerPath": "gdb.exe",
-			"program": "${workspaceFolder}/bin/debug/main.exe",
+			"program": "${workspaceFolder}/src/main/main.exe",
 			"cwd": "${workspaceFolder}",
-			"externalConsole": true,
-			"preLaunchTask": "main"
-		},
-		{
-			"name": "test",
-			"type": "cppdbg",
-			"request": "launch",
-			"MIMode": "gdb",
-			"miDebuggerPath": "gdb.exe",
-			"program": "${workspaceFolder}/bin/test/main.exe",
-			"cwd": "${workspaceFolder}",
-			"externalConsole": true
+			"preLaunchTask": "tup"
 		}
 	]
 }
