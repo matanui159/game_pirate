@@ -11,6 +11,16 @@
 			"cwd": "${workspaceFolder}",
 			"externalConsole": true,
 			"preLaunchTask": "main"
+		},
+		{
+			"name": "test",
+			"type": "cppdbg",
+			"request": "launch",
+			"MIMode": "gdb",
+			"miDebuggerPath": "gdb.exe",
+			"program": "${workspaceFolder}/bin/test/main.exe",
+			"cwd": "${workspaceFolder}",
+			"externalConsole": true
 		}
 	]
 }

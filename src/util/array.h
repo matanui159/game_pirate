@@ -2,7 +2,7 @@
 #define ARRAY_H_
 
 typedef struct array_t {
-	void* data;
+	unsigned char* data;
 	int elem_size;
 	int size;
 	int capacity;
