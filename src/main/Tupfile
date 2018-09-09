@@ -1,19 +1,18 @@
 include_rules
 
-UTIL = ../util
-
-CC_FLAGS += -I$(UTIL)
+CC_FLAGS += $(UTIL_INC)
 
 LD_FLAGS += -mwindows
 LD_FLAGS += -nostdlib -Wl,-e_entry
-LD_FLAGS += -lkernel32 -luser32
+LD_FLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32
 
 SRC += *.c
 SRC += graphics/*.c
 
-: foreach $(SRC) |> !CC |> {OBJ}
-: {OBJ} $(UTIL)/util.a |> !LD |> main.exe
+: $(BUILD_BIN) |> ^ PRE-BUILD^ %f |> $(BUILD_OUT)
+: foreach $(SRC) | $(BUILD_OUT) |> !CC |> {OBJ}
+: {OBJ} $(UTIL_BIN) |> !LD |> main.exe {BIN}
 
 ifneq ($(DEBUG),y)
-	: main.exe |> ^ UPX %O^ upx --ultra-brute %f -o%o |> %B_upx.exe
+	: {BIN} |> ^ UPX %O^ upx --ultra-brute %f -o%o |> %B_upx.exe
 endif

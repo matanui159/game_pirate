@@ -32,7 +32,6 @@ void window_init() {
 	wndclass.lpfnWndProc = window_proc;
 	wndclass.style = CS_OWNDC;
 	wndclass.hCursor = LoadCursorA(NULL, IDC_ARROW);
-	wndclass.hbrBackground = (HBRUSH)(COLOR_BACKGROUND + 1);
 	if (RegisterClassW(&wndclass) == 0) {
 		window_error(NULL);
 	}

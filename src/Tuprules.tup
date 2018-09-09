@@ -10,3 +10,11 @@ else
 	CC_FLAGS += -flto -Os
 	LD_FLAGS += -flto -Os -s
 endif
+
+UTIL = $(TUP_CWD)/util
+UTIL_INC = -I$(UTIL)
+UTIL_BIN = $(UTIL)/util.a
+
+BUILD = $(TUP_CWD)/build
+BUILD_BIN = $(BUILD)/build.exe
+BUILD_OUT = graphics/ogl.h
