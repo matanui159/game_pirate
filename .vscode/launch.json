@@ -7,7 +7,7 @@
 			"request": "launch",
 			"MIMode": "gdb",
 			"miDebuggerPath": "gdb.exe",
-			"program": "${workspaceFolder}/src/main/bin/bin.exe",
+			"program": "${workspaceFolder}/src/main/main.exe",
 			"cwd": "${workspaceFolder}",
 			"preLaunchTask": "tup"
 		}

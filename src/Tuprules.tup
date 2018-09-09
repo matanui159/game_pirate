@@ -17,4 +17,4 @@ UTIL_BIN = $(UTIL)/util.a
 
 BUILD = $(TUP_CWD)/build
 BUILD_BIN = $(BUILD)/build.exe
-BUILD_OUT = graphics/ogl.h
+BUILD_OUT = graphics/ogl.h graphics/mesh_data.h
