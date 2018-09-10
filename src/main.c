@@ -1,6 +1,6 @@
 #include "graphics/window.h"
 #include "graphics/context.h"
-#include "graphics/ogl.h"
+#include <ogl.h>
 
 void entry() {
 	window_init();

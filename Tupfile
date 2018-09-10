@@ -1,0 +1,31 @@
+DEBUG = y
+
+!CC = |> gcc -c %f -o %o $(CC_FLAGS) |>
+!LD = |> gcc %f -o %o $(LD_FLAGS) |>
+!LUA = |> lua %f %o |>
+!UPX = |> upx --ultra-brute %f -o%o |>
+
+CC_FLAGS += -Wall -Wextra
+LD_FLAGS += -mwindows
+LD_FLAGS += -nostdlib -Wl,-e_entry
+LD_FLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32
+
+ifeq ($(DEBUG),y)
+	CC_FLAGS += -g
+else
+	CC_FLAGS += -flto -Os
+	LD_FLAGS += -flto -Os -s
+endif
+
+SRC += src/*.c
+SRC += src/graphics/*.c
+
+: gen/*.lua |> !LUA |> bin/gen/%B.h {GEN}
+CC_FLAGS += -Ibin/gen
+ 
+: foreach $(SRC) | {GEN} |> !CC |> bin/obj/%B.o {OBJ}
+: {OBJ} |> !LD |> bin/main.exe {BIN}
+
+ifneq ($(DEBUG),y)
+	: {BIN} |> !UPX |> bin/main_upx.exe
+endif

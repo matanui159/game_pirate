@@ -4,6 +4,5 @@
 
 void context_init();
 void context_update();
-PROC context_func(const char* name);
 
 #endif

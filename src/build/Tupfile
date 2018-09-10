@@ -1,6 +1,0 @@
-include_rules
-
-CC_FLAGS += $(UTIL_INC)
-
-: foreach *.c |> !CC |> {OBJ}
-: {OBJ} $(UTIL_BIN) |> !LD |> build.exe

@@ -1,7 +1,7 @@
 #define OGL_BUILD
 #include "context.h"
 #include "window.h"
-#include "ogl.h"
+#include <ogl.h>
 #include <GL/wglext.h>
 
 typedef PFNWGLCREATECONTEXTATTRIBSARBPROC create_context_t;
@@ -57,12 +57,4 @@ void context_update() {
 		window_error("OpenGL Error");
 	}
 	SwapBuffers(g_dc);
-}
-
-PROC context_func(const char* name) {
-	PROC result = wglGetProcAddress(name);
-	if (result == NULL) {
-		window_error(NULL);
-	}
-	return result;
 }
