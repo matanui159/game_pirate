@@ -9,10 +9,10 @@ LD_FLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32
 SRC += *.c
 SRC += graphics/*.c
 
-: $(BUILD_BIN) |> ^ PRE-BUILD^ %f |> $(BUILD_OUT)
+: $(BUILD_BIN) |> %f |> $(BUILD_OUT)
 : foreach $(SRC) | $(BUILD_OUT) |> !CC |> {OBJ}
 : {OBJ} $(UTIL_BIN) |> !LD |> main.exe {BIN}
 
 ifneq ($(DEBUG),y)
-	: {BIN} |> ^ UPX %O^ upx --ultra-brute %f -o%o |> %B_upx.exe
+	: {BIN} |> upx --ultra-brute %f -o%o |> %B_upx.exe
 endif
