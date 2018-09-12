@@ -18,9 +18,9 @@ else
 endif
 
 SRC += src/*.c
-SRC += src/graphics/*.c
+SRC += src/graphics/*.c 
 
-: gen/*.lua |> !LUA |> bin/gen/%B.h {GEN}
+: foreach gen/*.lua |> !LUA |> bin/gen/%B.h {GEN}
 CC_FLAGS += -Ibin/gen
  
 : foreach $(SRC) | {GEN} |> !CC |> bin/obj/%B.o {OBJ}

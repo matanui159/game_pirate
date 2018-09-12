@@ -1,4 +1,3 @@
-#define OGL_BUILD
 #include "context.h"
 #include "window.h"
 #include <ogl.h>
@@ -50,11 +49,23 @@ void context_init() {
 	}
 	wglMakeCurrent(g_dc, context);
 	ogl_init();
+	// glViewport(0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 }
 
 void context_update() {
-	if (glGetError() != GL_NO_ERROR) {
-		window_error("OpenGL Error");
+	#define OGL_ERROR(error) case GL_##error: window_error(#error); break
+	GLenum error = glGetError();
+	switch (error) {
+		OGL_ERROR(OUT_OF_MEMORY);
+		OGL_ERROR(INVALID_VALUE);
+		OGL_ERROR(INVALID_ENUM);
+		OGL_ERROR(INVALID_OPERATION);
+		OGL_ERROR(INVALID_FRAMEBUFFER_OPERATION);
+		default:
+			if (error != GL_NO_ERROR) {
+				window_error("OpenGL Error");
+			}
+			break;
 	}
 	SwapBuffers(g_dc);
 }
