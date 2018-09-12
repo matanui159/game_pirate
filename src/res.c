@@ -2,6 +2,7 @@
 #include <mesh_data.h>
 
 mesh_t g_res_mesh_Wood;
+
 program_t g_res_program_wood;
 
 void res_init() {
@@ -10,20 +11,24 @@ void res_init() {
 
 	SHADER_INIT(&shader_vertex, GL_VERTEX_SHADER, 
 		layout(location = 0) in vec3 vertex;
-		out vec3 vcolor;
+		layout(location = 1) in vec3 normal;
+		out vec3 vnormal;
+
+		uniform mat4 matrix;
 
 		void main() {
-			vcolor = vec3(1);
-			gl_Position = vec4(vertex, 1);
+			vnormal = normalize(matrix * vec4(normal, 0)).xyz;
+			gl_Position = matrix * vec4(vertex, 1);
 		}
 	);
 
 	SHADER_INIT(&shader_fragment, GL_FRAGMENT_SHADER,
 		layout(location = 0) out vec4 color;
-		in vec3 vcolor;
+		in vec3 vnormal;
 
 		void main() {
-			color = vec4(vcolor, 1);
+			float light = dot(vnormal, vec3(0, 0, -1));
+			color = vec4(vec3(light), 1);
 		}
 	);
 

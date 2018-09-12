@@ -1,4 +1,5 @@
 DEBUG = y
+COMPRESS = n
 
 !CC = |> gcc -c %f -o %o $(CC_FLAGS) |>
 !LD = |> gcc %f -o %o $(LD_FLAGS) |>
@@ -13,7 +14,7 @@ LD_FLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32
 ifeq ($(DEBUG),y)
 	CC_FLAGS += -g
 else
-	CC_FLAGS += -flto -Os
+	CC_FLAGS += -flto -Os -DNDEBUG
 	LD_FLAGS += -flto -Os -s
 endif
 
@@ -26,6 +27,6 @@ CC_FLAGS += -Ibin/gen
 : foreach $(SRC) | {GEN} |> !CC |> bin/obj/%B.o {OBJ}
 : {OBJ} |> !LD |> bin/main.exe {BIN}
 
-ifneq ($(DEBUG),y)
+ifeq ($(COMPRESS),y)
 	: {BIN} |> !UPX |> bin/main_upx.exe
 endif

@@ -3,22 +3,45 @@
 #include <ogl.h>
 #include <GL/wglext.h>
 
+#define UNUSED(x) (void)(x)
+
 typedef PFNWGLCREATECONTEXTATTRIBSARBPROC create_context_t;
+typedef PFNGLDEBUGMESSAGECALLBACKPROC debug_callback_t;
 
 static HDC g_dc;
+
+#ifndef NDEBUG
+static HANDLE g_log;
+
+static void APIENTRY ogl_debug(GLenum source, GLenum type, GLuint id,
+		GLenum severity, GLsizei length, const GLchar* message,
+		const void* user) {
+	UNUSED(source);
+	UNUSED(type);
+	UNUSED(id);
+	UNUSED(user);
+
+	WriteFile(g_log, message, length, NULL, NULL);
+	if (severity == GL_DEBUG_SEVERITY_HIGH) {
+		window_error(message);
+	}
+}
+#endif
 
 void context_init() {
 	HWND wnd = window_get();
 	g_dc = GetDC(wnd);
 
-	PIXELFORMATDESCRIPTOR format = {};
-	format.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	format.nVersion = 1;
-	format.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	format.cColorBits = 24;
-	format.cAlphaBits = 8;
-	format.cDepthBits = 24;
-	format.cStencilBits = 8;
+	const PIXELFORMATDESCRIPTOR format = {
+		.nSize = sizeof(PIXELFORMATDESCRIPTOR),
+		.nVersion = 1,
+		.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+		.cColorBits = 24,
+		.cAlphaBits = 8,
+		.cDepthBits = 24,
+		.cStencilBits = 8
+	};
+
 	int id = ChoosePixelFormat(g_dc, &format);
 	if (id == 0) {
 		window_error(NULL);
@@ -39,7 +62,9 @@ void context_init() {
 	const int attribs[] = {
 		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
 		WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+		#ifndef NDEBUG
+			WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+		#endif
 		0
 	};
 
@@ -49,23 +74,18 @@ void context_init() {
 	}
 	wglMakeCurrent(g_dc, context);
 	ogl_init();
-	// glViewport(0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	
+	#ifndef NDEBUG
+		g_log = CreateFileW(L"ogl.log", GENERIC_WRITE, 0, NULL,
+			CREATE_ALWAYS, 0, NULL);
+		debug_callback_t debug_callback
+			= (debug_callback_t)wglGetProcAddress("glDebugMessageCallback");
+		debug_callback(ogl_debug, NULL);
+	#endif
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 void context_update() {
-	#define OGL_ERROR(error) case GL_##error: window_error(#error); break
-	GLenum error = glGetError();
-	switch (error) {
-		OGL_ERROR(OUT_OF_MEMORY);
-		OGL_ERROR(INVALID_VALUE);
-		OGL_ERROR(INVALID_ENUM);
-		OGL_ERROR(INVALID_OPERATION);
-		OGL_ERROR(INVALID_FRAMEBUFFER_OPERATION);
-		default:
-			if (error != GL_NO_ERROR) {
-				window_error("OpenGL Error");
-			}
-			break;
-	}
 	SwapBuffers(g_dc);
 }

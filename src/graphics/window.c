@@ -26,25 +26,37 @@ void window_init() {
 	const WCHAR class_name[] = L"window";
 	HMODULE module = GetModuleHandleW(NULL);
 
-	WNDCLASSW wndclass = {};
-	wndclass.hInstance = module;
-	wndclass.lpszClassName = class_name;
-	wndclass.lpfnWndProc = window_proc;
-	wndclass.style = CS_OWNDC;
-	wndclass.hCursor = LoadCursorA(NULL, IDC_ARROW);
+	const WNDCLASSW wndclass = {
+		.hInstance = module,
+		.lpszClassName = class_name,
+		.lpfnWndProc = window_proc,
+		.style = CS_OWNDC,
+		.hCursor = LoadCursorA(NULL, IDC_ARROW)
+	};
+
 	if (RegisterClassW(&wndclass) == 0) {
 		window_error(NULL);
 	}
+
+	#ifdef NDEBUG
+		DWORD style = WS_POPUP;
+		int width = GetSystemMetrics(SM_CXSCREEN);
+		int height = GetSystemMetrics(SM_CYSCREEN);
+	#else
+		DWORD style = WS_CAPTION | WS_SYSMENU;
+		int width = 1280;
+		int height = 720;
+	#endif
 
 	g_window = CreateWindowExW(
 		0,
 		class_name,
 		L"Pirate Game",
-		WS_POPUP | WS_VISIBLE,
+		style | WS_VISIBLE,
 		0,
 		0,
-		GetSystemMetrics(SM_CXSCREEN),
-		GetSystemMetrics(SM_CYSCREEN),
+		width,
+		height,
 		NULL,
 		NULL,
 		module,
