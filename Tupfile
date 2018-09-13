@@ -8,7 +8,7 @@ COMPRESS = n
 
 CC_FLAGS += -Wall -Wextra -msse
 LD_FLAGS += -mwindows -static
-LD_FLAGS += -lgdi32 -lopengl32
+LD_FLAGS += -lopengl32
 
 ifeq ($(DEBUG),y)
 	CC_FLAGS += -g
@@ -17,12 +17,12 @@ else
 	LD_FLAGS += -flto -Os -s
 endif
 
+: foreach gen/*.lua |> !LUA |> bin/gen/%B.h {GEN}
+CC_FLAGS += -Ibin/gen
+
 SRC += src/*.c
 SRC += src/graphics/*.c 
 
-: foreach gen/*.lua |> !LUA |> bin/gen/%B.h {GEN}
-CC_FLAGS += -Ibin/gen
- 
 : foreach $(SRC) | {GEN} |> !CC |> bin/obj/%B.o {OBJ}
 : {OBJ} |> !LD |> bin/main.exe {BIN}
 
