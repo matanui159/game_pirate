@@ -7,7 +7,9 @@ program_t g_res_program_wood;
 
 void res_init() {
 	shader_t shader_vertex;
-	shader_t shader_fragment;
+	shader_t shader_srgb;
+	shader_t shader_light;
+	shader_t shader_wood;
 
 	SHADER_INIT(&shader_vertex, GL_VERTEX_SHADER, 
 		layout(location = 0) in vec3 vertex;
@@ -22,13 +24,29 @@ void res_init() {
 		}
 	);
 
-	SHADER_INIT(&shader_fragment, GL_FRAGMENT_SHADER,
-		layout(location = 0) out vec4 color;
+	SHADER_INIT(&shader_srgb, GL_FRAGMENT_SHADER,
+		vec4 frag_srgb(vec4 prev) {
+			return pow(prev, vec4(vec3(1 / 2.2), 1));
+		}
+	);
+
+	SHADER_INIT(&shader_light, GL_FRAGMENT_SHADER,
 		in vec3 vnormal;
 
+		vec4 frag_light(vec4 prev) {
+			float light = clamp(dot(vnormal, vec3(0, 0, -1)), 0, 1);
+			return prev * (light * 0.9 + 0.1);
+		}
+	);
+
+	SHADER_INIT(&shader_wood, GL_FRAGMENT_SHADER,
+		layout(location = 0) out vec4 color;
+
+		vec4 frag_light(vec4 prev);
+		vec4 frag_srgb(vec4 prev);
+
 		void main() {
-			float light = dot(vnormal, vec3(0, 0, -1));
-			color = vec4(vec3(light), 1);
+			color = frag_srgb(frag_light(vec4(0.5, 0.3, 0.1, 1.0)));
 		}
 	);
 
@@ -36,6 +54,8 @@ void res_init() {
 	
 	program_init(&g_res_program_wood);
 	program_attach(&g_res_program_wood, &shader_vertex);
-	program_attach(&g_res_program_wood, &shader_fragment);
+	program_attach(&g_res_program_wood, &shader_light);
+	program_attach(&g_res_program_wood, &shader_srgb);
+	program_attach(&g_res_program_wood, &shader_wood);
 	program_link(&g_res_program_wood);
 }

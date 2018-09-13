@@ -77,3 +77,9 @@ void window_update() {
 HWND window_get() {
 	return g_window;
 }
+
+float window_ratio() {
+	RECT rect;
+	GetWindowRect(g_window, &rect);
+	return (float)(rect.right - rect.left) / (rect.bottom - rect.top);
+}

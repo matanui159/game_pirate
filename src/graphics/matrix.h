@@ -39,5 +39,7 @@ matrix_t matrix_scale(matrix_t* matrix, float x, float y, float z);
 matrix_t matrix_rotx(matrix_t* matrix, float angle);
 matrix_t matrix_roty(matrix_t* matrix, float angle);
 matrix_t matrix_rotz(matrix_t* matrix, float angle);
+matrix_t matrix_perspective(matrix_t* matrix, float near, float far,
+	float angle, float ratio);
 
 #endif
