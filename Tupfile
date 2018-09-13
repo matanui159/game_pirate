@@ -6,10 +6,9 @@ COMPRESS = n
 !LUA = |> lua %f %o |>
 !UPX = |> upx --ultra-brute %f -o%o |>
 
-CC_FLAGS += -Wall -Wextra
-LD_FLAGS += -mwindows
-LD_FLAGS += -nostdlib -Wl,-e_entry
-LD_FLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32
+CC_FLAGS += -Wall -Wextra -msse
+LD_FLAGS += -mwindows -static
+LD_FLAGS += -lgdi32 -lopengl32
 
 ifeq ($(DEBUG),y)
 	CC_FLAGS += -g

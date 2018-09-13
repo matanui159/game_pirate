@@ -31,15 +31,13 @@ typedef struct matrix_t {
 	};
 } matrix_t;
 
-void matrix_identity(matrix_t* matrix);
+matrix_t matrix_identity();
 
-// TODO
-// gotta figure out multiply order
-void matrix_multiply(matrix_t* matrix, matrix_t* other);
-void matrix_translate(matrix_t* matrix, float x, float y, float z);
-void matrix_scale(matrix_t* matrix, float x, float y, float z);
-void matrix_rotx(matrix_t* matrix, float angle);
-void matrix_roty(matrix_t* matrix, float angle);
-void matrix_rotz(matrix_t* matrix, float angle);
+matrix_t matrix_multiply(matrix_t* left, matrix_t* right);
+matrix_t matrix_translate(matrix_t* matrix, float x, float y, float z);
+matrix_t matrix_scale(matrix_t* matrix, float x, float y, float z);
+matrix_t matrix_rotx(matrix_t* matrix, float angle);
+matrix_t matrix_roty(matrix_t* matrix, float angle);
+matrix_t matrix_rotz(matrix_t* matrix, float angle);
 
 #endif

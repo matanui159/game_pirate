@@ -2,6 +2,7 @@
 #include "window.h"
 #include <ogl.h>
 #include <GL/wglext.h>
+#include <stdio.h>
 
 #define UNUSED(x) (void)(x)
 
@@ -11,8 +12,6 @@ typedef PFNGLDEBUGMESSAGECALLBACKPROC debug_callback_t;
 static HDC g_dc;
 
 #ifndef NDEBUG
-static HANDLE g_log;
-
 static void APIENTRY ogl_debug(GLenum source, GLenum type, GLuint id,
 		GLenum severity, GLsizei length, const GLchar* message,
 		const void* user) {
@@ -20,8 +19,9 @@ static void APIENTRY ogl_debug(GLenum source, GLenum type, GLuint id,
 	UNUSED(type);
 	UNUSED(id);
 	UNUSED(user);
+	UNUSED(length);
 
-	WriteFile(g_log, message, length, NULL, NULL);
+	puts(message);
 	if (severity == GL_DEBUG_SEVERITY_HIGH) {
 		window_error(message);
 	}
@@ -76,8 +76,6 @@ void context_init() {
 	ogl_init();
 	
 	#ifndef NDEBUG
-		g_log = CreateFileW(L"ogl.log", GENERIC_WRITE, 0, NULL,
-			CREATE_ALWAYS, 0, NULL);
 		debug_callback_t debug_callback
 			= (debug_callback_t)wglGetProcAddress("glDebugMessageCallback");
 		debug_callback(ogl_debug, NULL);
