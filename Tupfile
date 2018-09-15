@@ -1,10 +1,10 @@
-DEBUG = y
-COMPRESS = n
+DEBUG = n
+COMPRESS = y
 
-!CC = |> gcc -c %f -o %o $(CC_FLAGS) |>
-!LD = |> gcc %f -o %o $(LD_FLAGS) |>
-!LUA = |> lua %f %o |>
-!UPX = |> upx --ultra-brute %f -o%o |>
+!CC = |> ^ CC %f^ gcc -c %f -o %o $(CC_FLAGS) |>
+!LD = |> ^ LD %o^ gcc %f -o %o $(LD_FLAGS) |>
+!LUA = |> ^ LUA %f^ lua %f %o |>
+!UPX = |> ^ UPX %f^ upx --ultra-brute %f -o%o |>
 
 CC_FLAGS += -Wall -Wextra -msse
 LD_FLAGS += -mwindows -static
@@ -21,7 +21,7 @@ endif
 CC_FLAGS += -Ibin/gen
 
 SRC += src/*.c
-SRC += src/graphics/*.c 
+SRC += src/graphics/*.c
 
 : foreach $(SRC) | {GEN} |> !CC |> bin/obj/%B.o {OBJ}
 : {OBJ} |> !LD |> bin/main.exe {BIN}

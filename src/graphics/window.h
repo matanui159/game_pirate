@@ -7,5 +7,6 @@ void window_init();
 void window_update();
 HWND window_get();
 float window_ratio();
+void window_cursor(float* x, float* y);
 
 #endif

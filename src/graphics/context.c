@@ -82,6 +82,8 @@ void context_init() {
 	#endif
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 }
 
 void context_update() {

@@ -1,11 +1,24 @@
 #include "window.h"
+#include <stdlib.h>
 
 static HWND g_window;
+static _Bool g_grab = 1;
 
 static LRESULT CALLBACK window_proc(HWND wnd, UINT msg,
 		WPARAM wpm, LPARAM lpm) {
-	if (msg == WM_CLOSE || (msg == WM_KEYDOWN && wpm == VK_ESCAPE)) {
-		ExitProcess(0);
+	switch (msg) {
+		case WM_DESTROY:
+			exit(EXIT_SUCCESS);
+		case WM_KEYDOWN:
+			switch (wpm) {
+				case VK_ESCAPE:
+					exit(EXIT_SUCCESS);
+				case VK_F1:
+					g_grab = !g_grab;
+					ShowCursor(!g_grab);
+					break;
+			}
+			break;
 	}
 	return DefWindowProcW(wnd, msg, wpm, lpm);
 }
@@ -19,7 +32,7 @@ void window_error(const char* msg) {
 		FormatMessageA(flags, NULL, GetLastError(), 0, (char*)&msg, 0, NULL);
 	}
 	MessageBox(g_window, msg, NULL, MB_ICONERROR);
-	ExitProcess(1);
+	exit(EXIT_FAILURE);
 }
 
 void window_init() {
@@ -65,6 +78,7 @@ void window_init() {
 	if (g_window == NULL) {
 		window_error(NULL);
 	}
+	ShowCursor(0);
 }
 
 void window_update() {
@@ -82,4 +96,22 @@ float window_ratio() {
 	RECT rect;
 	GetWindowRect(g_window, &rect);
 	return (float)(rect.right - rect.left) / (rect.bottom - rect.top);
+}
+
+void window_cursor(float* x, float* y) {
+	if (g_grab && GetFocus() == g_window) {
+		POINT cursor;
+		RECT rect;
+		GetCursorPos(&cursor);
+		GetWindowRect(g_window, &rect);
+		
+		int midx = (rect.left + rect.right) / 2;
+		int midy = (rect.top + rect.bottom) / 2;
+		*x = cursor.x - midx;
+		*y = cursor.y - midy;
+		SetCursorPos(midx, midy);
+	} else {
+		*x = 0;
+		*y = 0;
+	}
 }

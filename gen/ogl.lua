@@ -56,6 +56,7 @@ out:write([[
 #endif
 #ifdef OGL_BUILD
 #include <windows.h>
+#include <stdlib.h>
 
 ]])
 
@@ -69,7 +70,7 @@ static PROC ogl_proc(const char* name) {
 	PROC result = wglGetProcAddress(name);
 	if (result == NULL) {
 		MessageBox(NULL, name, NULL, MB_ICONERROR);
-		ExitProcess(1);
+		exit(EXIT_FAILURE);
 	}
 	return result;
 }
